@@ -10,41 +10,6 @@ export default function Hero() {
   // Different speeds = layered feel
     const gridY = useTransform(scrollY, [0, 1200], [0, 120]);
 
-  const nameAnim = reduceMotion
-    ? {}
-    : {
-        initial: { opacity: 0, scale: 0.985, filter: "blur(6px)" },
-        animate: {
-          opacity: 1,
-          scale: 1,
-          filter: "blur(0px)",
-          transition: {
-            type: "spring",
-            stiffness: 260,
-            damping: 22,
-            mass: 0.7,
-          },
-        },
-      };
-
-  const descAnim = reduceMotion
-    ? {}
-    : {
-        initial: { opacity: 0, y: -26, filter: "blur(10px)" },
-        animate: {
-          opacity: 1,
-          y: 0,
-          filter: "blur(0px)",
-          transition: {
-            type: "spring",
-            stiffness: 380, // feels “snappy”
-            damping: 24, // controls “velocity”
-            mass: 0.55,
-            delay: 0.12,
-          },
-        },
-      };
-
   const streakBase =
     "absolute left-1/2 -translate-x-1/2 rounded-full blur-[0.2px] opacity-0";
 
@@ -126,19 +91,32 @@ export default function Hero() {
         <div className="max-w-3xl">
             
           <motion.h1
-            {...nameAnim}
+            initial={reduceMotion ? undefined : { opacity: 0, scale: 0.985, filter: "blur(6px)" }}
+            animate={reduceMotion ? undefined : { opacity: 1, scale: 1, filter: "blur(0px)" }}
+            transition={
+                reduceMotion
+                ? undefined
+                : { type: "spring", stiffness: 260, damping: 22, mass: 0.7 }
+            }
             className="text-balance text-5xl font-semibold tracking-tight text-white sm:text-6xl md:text-7xl"
-          >
+            >
             Jayadityan Sethuraman
-          </motion.h1>
+            </motion.h1>
+
 
           <motion.p
-            {...descAnim}
+            initial={reduceMotion ? undefined : { opacity: 0, y: -26, filter: "blur(10px)" }}
+            animate={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={
+                reduceMotion
+                ? undefined
+                : { type: "spring", stiffness: 380, damping: 24, mass: 0.55, delay: 0.12 }
+            }
             className="mt-6 text-balance text-lg leading-relaxed text-white/72 sm:text-xl"
-          >
-            ML/AI Software Engineer. Passionate about building scalable AI
-            systems and innovative applications.
-          </motion.p>
+            >
+            ML/AI Software Engineer. Passionate about building scalable AI systems and innovative applications.
+            </motion.p>
+
 
           <div className="mt-10 flex flex-wrap gap-3">
             <a
