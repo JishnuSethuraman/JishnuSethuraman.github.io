@@ -1,24 +1,34 @@
 import Hero from "@/components/Hero";
+import Section from "@/components/Section";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-black">
+    <main className="bg-black">
       <Hero />
 
-      {/* Placeholder sections so buttons scroll somewhere */}
-      <section id="projects" className="mx-auto max-w-6xl px-6 py-24">
-        <h2 className="text-2xl font-semibold text-white">Projects</h2>
-        <p className="mt-3 text-white/70">
-          Next we’ll build the projects grid/cards.
-        </p>
-      </section>
+      <Section
+        id="projects"
+        title="Projects"
+        subtitle="I build ML systems and clean full-stack apps. Here are a few."
+      >
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-white/70">
+          Project cards go here.
+        </div>
+      </Section>
 
-      <section id="contact" className="mx-auto max-w-6xl px-6 py-24">
-        <h2 className="text-2xl font-semibold text-white">Contact</h2>
-        <p className="mt-3 text-white/70">
-          Next we’ll build a clean contact block.
-        </p>
-      </section>
+      <Section
+        id="about"
+        title="About"
+        subtitle="Short bio / skills / what you’re looking for."
+        delay={0.06}
+      />
+
+      <Section
+        id="contact"
+        title="Contact"
+        subtitle="Email + links go here."
+        delay={0.1}
+      />
     </main>
   );
 }

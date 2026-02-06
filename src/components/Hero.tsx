@@ -1,9 +1,14 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+
 
 export default function Hero() {
   const reduceMotion = useReducedMotion();
+    const { scrollY } = useScroll();
+
+  // Different speeds = layered feel
+    const gridY = useTransform(scrollY, [0, 1200], [0, 120]);
 
   const nameAnim = reduceMotion
     ? {}
@@ -44,26 +49,30 @@ export default function Hero() {
     "absolute left-1/2 -translate-x-1/2 rounded-full blur-[0.2px] opacity-0";
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative isolate min-h-screen overflow-hidden bg-black">
+
       {/* Background */}
-      <div className="absolute inset-0 -z-10">
+      <div className="absolute inset-0 z-10 pointer-events-none">
         {/* soft radial glow */}
         <div className="absolute left-1/2 top-[-120px] h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-white/10 blur-3xl" />
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black to-black" />
+        {/* subtle vignette so grain has something to blend with */}
+        <div className="absolute inset-0 bg-[radial-gradient(80%_60%_at_50%_25%,rgba(255,255,255,0.06),transparent_60%)]" />
 
-        {/* subtle grid */}
-        <div
-          className="absolute inset-0 opacity-[0.10]"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, rgba(255,255,255,0.10) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.10) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-            maskImage:
-              "radial-gradient(circle at 50% 25%, black 35%, transparent 70%)",
-            WebkitMaskImage:
-              "radial-gradient(circle at 50% 25%, black 35%, transparent 70%)",
-          }}
-        />
+        {!reduceMotion && (
+            <motion.div
+                aria-hidden
+                className="absolute inset-0 opacity-[0.50]"
+                style={{
+                y: gridY,
+                backgroundImage:
+                    "linear-gradient(to right, rgba(255,255,255,0.10) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.10) 1px, transparent 1px)",
+                backgroundSize: "72px 72px",
+                transform: "translate3d(0,0,0)",
+                }}
+            />
+            )}
+
 
         {/* Velocity streaks */}
         {!reduceMotion && (
@@ -113,8 +122,9 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="mx-auto max-w-6xl px-6 py-24 sm:py-28">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl items-center px-6 py-24">
         <div className="max-w-3xl">
+            
           <motion.h1
             {...nameAnim}
             className="text-balance text-5xl font-semibold tracking-tight text-white sm:text-6xl md:text-7xl"
@@ -126,8 +136,8 @@ export default function Hero() {
             {...descAnim}
             className="mt-6 text-balance text-lg leading-relaxed text-white/72 sm:text-xl"
           >
-            I build clean, high-performance software — from ML systems to
-            full-stack products. Here are the projects I’m proud of.
+            ML/AI Software Engineer. Passionate about building scalable AI
+            systems and innovative applications.
           </motion.p>
 
           <div className="mt-10 flex flex-wrap gap-3">
@@ -149,6 +159,15 @@ export default function Hero() {
 
       {/* bottom fade */}
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black to-transparent" />
+      <div className="pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2">
+        <div className="flex flex-col items-center gap-2 text-white/50">
+            <span className="text-xs tracking-wide">Scroll</span>
+            <div className="h-8 w-[1px] overflow-hidden bg-white/15">
+            <div className="h-8 w-[1px] bg-white/60 animate-[scroll_1.6s_ease-in-out_infinite]" />
+            </div>
+        </div>
+        </div>
+
     </section>
   );
 }
