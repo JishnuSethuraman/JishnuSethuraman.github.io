@@ -164,10 +164,7 @@ export default function ProjectsSection() {
 
         {/* Header */}
         <div className="mx-auto max-w-6xl px-6 pt-24">
-          <h2 className="text-2xl font-semibold text-white">Projects</h2>
-          <p className="mt-3 max-w-2xl text-white/70">
-            A curated set of things I’ve built focused on engineering quality, clarity, and impact.
-          </p>
+          <h2 className="text-2xl font-semibold text-white">A curated set of things I’ve built focused on engineering quality, clarity, and impact.</h2>
         </div>
 
         {/* Embedded scroll container */}
