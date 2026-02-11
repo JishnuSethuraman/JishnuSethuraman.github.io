@@ -17,6 +17,7 @@ export default function Home() {
 
       <Section
         id="projects"
+        title="Projects"
       >
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-white/70">
           <ProjectsSection />
@@ -33,6 +34,7 @@ export default function Home() {
 
       <Section
         id="contact"
+        title="Contact"
         subtitle="Links to my resume, LinkedIn, GitHub, and email are always available in the top right corner."
         delay={0.1}
       />
