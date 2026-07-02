@@ -12,8 +12,9 @@ export default function Home() {
       <ComicRoot>
         <Hero />
         <Career />
-        <WorkDivider />
+        <WorkDivider text="THE WORK ▸▸▸" angle={115} />
         <Projects />
+        <WorkDivider text="◂◂◂ WHO IS THIS GUY?!" angle={-115} reverse />
         <About />
         <Contact />
       </ComicRoot>

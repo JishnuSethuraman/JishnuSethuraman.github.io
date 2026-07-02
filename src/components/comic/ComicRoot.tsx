@@ -10,7 +10,8 @@ import {
   type ReactNode,
 } from "react";
 import TopBar from "./TopBar";
-import { MARKER, STAR } from "./ui";
+import { useComicEngine } from "./useComicEngine";
+import { MARKER, MONO, STAR } from "./ui";
 
 export type Theme = "light" | "dark";
 
@@ -34,15 +35,41 @@ function shakeFrames(a: number): Keyframe[] {
   return f;
 }
 
+const spineLink: CSSProperties = {
+  fontFamily: MONO,
+  fontWeight: 700,
+  fontSize: 10,
+  lineHeight: 1,
+  letterSpacing: ".1em",
+  color: "rgba(242,232,210,.65)",
+  padding: "6px 8px",
+  transition: "color .15s,background .15s",
+};
+
+const cursorStar = (size: number, opacity: number, spin: string): CSSProperties => ({
+  position: "absolute",
+  left: -size / 2,
+  top: -size / 2,
+  width: size,
+  height: size,
+  background: "var(--acc)",
+  opacity,
+  clipPath: STAR,
+  animation: spin,
+});
+
 export default function ComicRoot({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
   const busy = useRef(false);
+  const rootRef = useRef<HTMLDivElement>(null);
   const shakeRef = useRef<HTMLDivElement>(null);
   const linesRef = useRef<HTMLDivElement>(null);
   const flashRef = useRef<HTMLDivElement>(null);
   const wipeRef = useRef<HTMLDivElement>(null);
   const starRef = useRef<HTMLDivElement>(null);
   const sfxRef = useRef<HTMLDivElement>(null);
+
+  useComicEngine(rootRef);
 
   const toggleTheme = useCallback(() => {
     if (busy.current) return;
@@ -56,11 +83,8 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
     }
     busy.current = true;
 
-    const A = (
-      el: HTMLElement | null,
-      kf: Keyframe[],
-      opt: KeyframeAnimationOptions,
-    ) => el?.animate(kf, { fill: "both", ...opt });
+    const A = (el: HTMLElement | null, kf: Keyframe[], opt: KeyframeAnimationOptions) =>
+      el?.animate(kf, { fill: "both", ...opt });
 
     const lines = linesRef.current;
     if (lines) lines.style.display = "block";
@@ -136,6 +160,7 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
   return (
     <ThemeCtx.Provider value={theme}>
       <div
+        ref={rootRef}
         data-theme={theme}
         style={
           {
@@ -151,18 +176,16 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
       >
         <TopBar theme={theme} onToggle={toggleTheme} />
         <span id="top" />
-        <div ref={shakeRef}>{children}</div>
+        <div data-role="shake" ref={shakeRef}>
+          <div data-role="skew" style={{ willChange: "transform" }}>
+            {children}
+          </div>
+        </div>
 
-        {/* fixed transition overlay */}
+        {/* ===================== theme transition overlay ===================== */}
         <div
           aria-hidden
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 60,
-            pointerEvents: "none",
-            overflow: "hidden",
-          }}
+          style={{ position: "fixed", inset: 0, zIndex: 60, pointerEvents: "none", overflow: "hidden" }}
         >
           <div
             ref={linesRef}
@@ -185,8 +208,7 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
               position: "absolute",
               inset: 0,
               opacity: 0,
-              background:
-                "radial-gradient(circle at 50% 50%,#fff,var(--acc) 60%,var(--acc))",
+              background: "radial-gradient(circle at 50% 50%,#fff,var(--acc) 60%,var(--acc))",
             }}
           />
           <div
@@ -237,6 +259,144 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
             }}
           >
             NIGHT
+          </div>
+        </div>
+
+        {/* ===================== cinematic overlays ===================== */}
+        <div
+          data-role="speedo"
+          aria-hidden
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 55,
+            pointerEvents: "none",
+            opacity: 0,
+            background:
+              "repeating-linear-gradient(90deg,transparent 0 54px,color-mix(in srgb,var(--ink) 60%,transparent) 54px 56px,transparent 56px 118px)",
+            WebkitMask: "radial-gradient(120% 92% at 50% 50%,#000 26%,transparent 76%)",
+            mask: "radial-gradient(120% 92% at 50% 50%,#000 26%,transparent 76%)",
+          }}
+        />
+        <div
+          aria-hidden
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 56,
+            pointerEvents: "none",
+            opacity: 0.05,
+            backgroundImage: "radial-gradient(var(--dot) 1px,transparent 1.3px)",
+            backgroundSize: "6px 6px",
+            animation: "grainShift .5s steps(1,end) infinite",
+          }}
+        />
+        <div
+          aria-hidden
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 57,
+            pointerEvents: "none",
+            border: "clamp(4px,.6vw,10px) solid var(--ink)",
+            background: "radial-gradient(125% 105% at 50% 42%,transparent 60%,rgba(10,8,4,.16))",
+          }}
+        />
+        <div
+          data-role="fx"
+          aria-hidden
+          style={{ position: "fixed", inset: 0, zIndex: 75, pointerEvents: "none", overflow: "hidden" }}
+        />
+        <div
+          data-role="cursor"
+          aria-hidden
+          style={{ position: "fixed", left: 0, top: 0, zIndex: 80, pointerEvents: "none", width: 0, height: 0, display: "none" }}
+        >
+          <div
+            style={{
+              ...cursorStar(24, 1, "spinSlowLocal 5s linear infinite"),
+              filter: "drop-shadow(1.5px 1.5px 0 #15120c)",
+            }}
+          />
+        </div>
+        <div
+          data-role="curst1"
+          aria-hidden
+          style={{ position: "fixed", left: 0, top: 0, zIndex: 79, pointerEvents: "none", width: 0, height: 0, display: "none" }}
+        >
+          <div style={cursorStar(16, 0.4, "spinRevLocal 4s linear infinite")} />
+        </div>
+        <div
+          data-role="curst2"
+          aria-hidden
+          style={{ position: "fixed", left: 0, top: 0, zIndex: 78, pointerEvents: "none", width: 0, height: 0, display: "none" }}
+        >
+          <div style={cursorStar(10, 0.2, "spinSlowLocal 3s linear infinite")} />
+        </div>
+
+        {/* ===================== spine nav ===================== */}
+        <div
+          style={{
+            position: "fixed",
+            left: "50%",
+            bottom: 16,
+            transform: "translateX(-50%)",
+            zIndex: 58,
+            display: "flex",
+            alignItems: "center",
+            gap: 3,
+            background: "#15120c",
+            border: "2.5px solid #f2e8d2",
+            boxShadow: "4px 4px 0 rgba(0,0,0,.5)",
+            padding: "5px 7px",
+          }}
+        >
+          <a data-spine="#top" href="#top" style={spineLink}>COVER</a>
+          <a data-spine="#chapter-1" href="#chapter-1" style={spineLink}>CH.1</a>
+          <a data-spine="#chapter-2" href="#chapter-2" style={spineLink}>CH.2</a>
+          <a data-spine="#chapter-3" href="#chapter-3" style={spineLink}>CH.3</a>
+          <a data-spine="#finale" href="#finale" style={spineLink}>FIN</a>
+        </div>
+
+        {/* ===================== intro cinematic ===================== */}
+        <div data-role="intro" aria-hidden style={{ position: "fixed", inset: 0, zIndex: 90, pointerEvents: "none" }}>
+          <div data-role="introTop" style={{ position: "absolute", left: 0, right: 0, top: 0, height: "50.4%", background: "#0f0c07" }} />
+          <div data-role="introBot" style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "50.4%", background: "#0f0c07" }} />
+          <div
+            data-role="introSeam"
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: "50%",
+              height: 3,
+              transform: "translateY(-50%) scaleX(0)",
+              background: "var(--acc)",
+              boxShadow: "0 0 20px var(--acc)",
+            }}
+          />
+          <div
+            data-role="introTitle"
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%,-50%)",
+              opacity: 0,
+              textAlign: "center",
+              width: "max-content",
+              maxWidth: "92vw",
+            }}
+          >
+            <div style={{ fontFamily: MONO, fontWeight: 700, fontSize: "clamp(10px,1vw,14px)", lineHeight: 1, letterSpacing: ".34em", color: "#f2e8d2", marginBottom: 14 }}>
+              JS COMICS PRESENTS
+            </div>
+            <div style={{ fontFamily: MARKER, fontSize: "clamp(38px,7vw,110px)", lineHeight: 0.9, color: "var(--acc)", textShadow: ".05em .05em 0 rgba(0,0,0,.55)" }}>
+              THE ML ENGINEER
+            </div>
+            <div style={{ fontFamily: MONO, fontWeight: 700, fontSize: "clamp(9px,.85vw,12px)", lineHeight: 1.6, letterSpacing: ".26em", color: "rgba(242,232,210,.6)", marginTop: 14 }}>
+              A JAYADITYAN SETHURAMAN PRODUCTION · ISSUE #01
+            </div>
           </div>
         </div>
       </div>

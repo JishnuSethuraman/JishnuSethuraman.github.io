@@ -144,7 +144,7 @@ img {
 @keyframes burstIn {
   0% { opacity: 0; transform: scale(0) rotate(-55deg); }
   70% { opacity: 1; transform: scale(1.14) rotate(8deg); }
-  100% { transform: scale(1) rotate(0); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
 }
 @keyframes wipeReveal {
   0% { opacity: 0; clip-path: inset(0 100% 0 0); }
@@ -153,12 +153,12 @@ img {
 @keyframes flyL {
   0% { opacity: 0; transform: translateX(-140px); filter: blur(9px); }
   60% { opacity: 1; filter: blur(0); }
-  100% { transform: translateX(0); }
+  100% { opacity: 1; transform: translateX(0); filter: blur(0); }
 }
 @keyframes flyR {
   0% { opacity: 0; transform: translateX(140px); filter: blur(9px); }
   60% { opacity: 1; filter: blur(0); }
-  100% { transform: translateX(0); }
+  100% { opacity: 1; transform: translateX(0); filter: blur(0); }
 }
 @keyframes sashIn {
   0% { opacity: 0; transform: rotate(-3deg) scaleX(0.15); }
@@ -178,6 +178,34 @@ img {
   52% { opacity: 1; transform: scale(0.9) rotate(var(--sr, -6deg)); }
   72% { transform: scale(1.06) rotate(var(--sr, -6deg)); }
   100% { opacity: 1; transform: scale(1) rotate(var(--sr, -6deg)); }
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes boltFlash {
+  0%, 84% { opacity: 0; }
+  86% { opacity: 1; }
+  88% { opacity: 0.15; }
+  90% { opacity: 0.9; }
+  93%, 100% { opacity: 0; }
+}
+@keyframes popOccasional {
+  0%, 82%, 96%, 100% { transform: scale(0) rotate(-14deg); opacity: 0; }
+  86%, 92% { transform: scale(1) rotate(4deg); opacity: 1; }
+}
+@keyframes grainShift {
+  0% { background-position: 0 0; }
+  20% { background-position: -13px 8px; }
+  40% { background-position: 9px -12px; }
+  60% { background-position: -6px -8px; }
+  80% { background-position: 12px 10px; }
+  100% { background-position: 0 0; }
+}
+@keyframes ringBurst {
+  0% { transform: scale(0.25); opacity: 0.5; }
+  70% { opacity: 0.16; }
+  100% { transform: scale(1.55); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -273,4 +301,41 @@ img {
 .shelf::-webkit-scrollbar-thumb {
   background: var(--ink);
   border: 2px solid var(--panel2);
+}
+
+/* ============================ hero scene visibility ============================ */
+.scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: block;
+  opacity: 1;
+}
+[data-theme="light"] .scene-dark {
+  display: none;
+  opacity: 0;
+}
+[data-theme="dark"] .scene-light {
+  display: none;
+  opacity: 0;
+}
+.kinetic-letter {
+  display: inline-block;
+  white-space: pre;
+}
+
+/* cover-box + hero chip hovers */
+.lift-acc {
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.lift-acc:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 var(--acc);
+}
+.again-btn {
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.again-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.55);
 }
