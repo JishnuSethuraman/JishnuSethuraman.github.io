@@ -43,6 +43,7 @@ function LightScene() {
         {/* FAR depth layer — radiating speed lines (toned down: lower opacity, slower, tighter mask) */}
         <div data-px="0.20" style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none", willChange: "transform" }}>
           <div
+            className="ray-layer"
             style={{
               position: "absolute",
               left: "68%",
@@ -58,6 +59,7 @@ function LightScene() {
             }}
           />
           <div
+            className="ray-layer"
             style={{
               position: "absolute",
               left: "68%",
@@ -220,6 +222,7 @@ function DarkScene() {
         {/* FAR depth layer — radiating speed lines (toned down) */}
         <div data-px="0.20" style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none", willChange: "transform" }}>
           <div
+            className="ray-layer"
             style={{
               position: "absolute",
               left: "32%",
@@ -235,6 +238,7 @@ function DarkScene() {
             }}
           />
           <div
+            className="ray-layer"
             style={{
               position: "absolute",
               left: "32%",

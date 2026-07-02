@@ -21,6 +21,13 @@ export function useComicEngine(rootRef: RefObject<HTMLElement | null>) {
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const finePointer = window.matchMedia("(pointer:fine)").matches;
+    // "lite" = phones/tablets/small viewports. The pinned warp + huge gradient
+    // layers exhaust mobile GPU memory (Safari reload-loops), so we collapse to
+    // a static, reduced-motion-style experience there.
+    const lite =
+      reduce ||
+      window.matchMedia("(pointer:coarse)").matches ||
+      window.innerWidth <= 820;
 
     const cleanups: Array<() => void> = [];
 
@@ -75,8 +82,8 @@ export function useComicEngine(rootRef: RefObject<HTMLElement | null>) {
     let _fileIdx = 0;
     let _lastPct = -1;
 
-    // reduced-motion: unpin everything, hide the warp/HUD flourishes
-    if (reduce) {
+    // lite/reduced-motion: unpin everything, hide the warp/HUD flourishes
+    if (lite) {
       if (heroPin) heroPin.style.height = "100vh";
       if (tunnel) tunnel.style.display = "none";
       if (warpHud) warpHud.style.display = "none";
@@ -86,7 +93,7 @@ export function useComicEngine(rootRef: RefObject<HTMLElement | null>) {
         projSticky.style.height = "auto";
       }
     }
-    if (shelf && !reduce) shelf.style.scrollSnapType = "none";
+    if (shelf && !lite) shelf.style.scrollSnapType = "none";
 
     // ---------- shake helper ----------
     const shakeFrames = (a: number): Keyframe[] => {
@@ -159,7 +166,7 @@ export function useComicEngine(rootRef: RefObject<HTMLElement | null>) {
       });
     };
 
-    if (!reduce && fxEl) {
+    if (!lite && fxEl) {
       const onDown = (e: PointerEvent) => {
         spawnBurst(e.clientX, e.clientY);
         const star = cursorEl?.firstElementChild;
@@ -207,7 +214,7 @@ export function useComicEngine(rootRef: RefObject<HTMLElement | null>) {
       t1y = -100,
       t2x = -100,
       t2y = -100;
-    const cursorOn = !reduce && finePointer && !!cursorEl;
+    const cursorOn = !lite && finePointer && !!cursorEl;
     if (cursorOn) {
       cursorEl!.style.display = "block";
       if (curst1El) curst1El.style.display = "block";
@@ -225,7 +232,7 @@ export function useComicEngine(rootRef: RefObject<HTMLElement | null>) {
     }
 
     // ---------- portrait tilt ----------
-    if (!reduce && finePointer) {
+    if (!lite && finePointer) {
       qa("[data-tilt]").forEach((el) => {
         const sec = el.closest("section") || el;
         const onMove = (e: Event) => {
@@ -251,7 +258,7 @@ export function useComicEngine(rootRef: RefObject<HTMLElement | null>) {
     }
 
     // ---------- kinetic type: per-letter hover bounce ----------
-    if (!reduce && finePointer) {
+    if (!lite && finePointer) {
       qa(".kinetic-letter").forEach((ch) => {
         const onEnter = () => {
           ch.animate(
@@ -270,8 +277,8 @@ export function useComicEngine(rootRef: RefObject<HTMLElement | null>) {
       });
     }
 
-    // ---------- shelf drag-to-scroll ----------
-    if (shelf) {
+    // ---------- shelf drag-to-scroll (native touch scroll handles lite mode) ----------
+    if (shelf && !lite) {
       let down = false,
         startX = 0,
         startS = 0,
@@ -507,13 +514,17 @@ export function useComicEngine(rootRef: RefObject<HTMLElement | null>) {
         speedoEl.style.opacity = o < 0.02 ? "0" : o.toFixed(2);
       }
     };
-    loopId = requestAnimationFrame(step);
-    cleanups.push(() => cancelAnimationFrame(loopId));
+    // Skip the per-frame loop entirely in lite mode — no warp/shelf/parallax
+    // work, no cursor, no speedo. This is the main mobile-memory relief.
+    if (!lite) {
+      loopId = requestAnimationFrame(step);
+      cleanups.push(() => cancelAnimationFrame(loopId));
+    }
 
     // ---------- intro cinematic curtain ----------
     const intro = q("[data-role=intro]");
     if (intro) {
-      if (reduce) {
+      if (lite) {
         intro.style.display = "none";
       } else {
         const top = q("[data-role=introTop]");
