@@ -22,10 +22,14 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: npm
 
       - run: npm ci
+
+      # quality gates guard the deploy — a broken main never ships
+      - run: npm run lint
+      - run: npm run typecheck
       - run: npm run build
 
       - run: touch out/.nojekyll
