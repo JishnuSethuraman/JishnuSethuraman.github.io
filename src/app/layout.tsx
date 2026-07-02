@@ -1,16 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Permanent_Marker, Space_Grotesk, Space_Mono } from "next/font/google";
 import "./globals.css";
-import TopNav from "@/components/TopNav";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const marker = Permanent_Marker({
+  weight: "400",
   subsets: ["latin"],
+  variable: "--font-marker",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const grotesk = Space_Grotesk({
   subsets: ["latin"],
+  variable: "--font-grotesk",
+});
+
+const mono = Space_Mono({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-mono",
 });
 
 export const metadata: Metadata = {
@@ -25,8 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-black text-white">
-        <TopNav />
+      <body className={`${marker.variable} ${grotesk.variable} ${mono.variable}`}>
         {children}
       </body>
     </html>
