@@ -13,11 +13,8 @@ export function useComicEngine(rootRef: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    const q = <T extends Element = HTMLElement>(s: string) =>
-      root.querySelector<T>(s);
-    const qa = <T extends Element = HTMLElement>(s: string) => [
-      ...root.querySelectorAll<T>(s),
-    ];
+    const q = <T extends Element = HTMLElement>(s: string) => root.querySelector<T>(s);
+    const qa = <T extends Element = HTMLElement>(s: string) => [...root.querySelectorAll<T>(s)];
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const finePointer = window.matchMedia("(pointer:fine)").matches;
@@ -25,9 +22,7 @@ export function useComicEngine(rootRef: RefObject<HTMLElement | null>) {
     // layers exhaust mobile GPU memory (Safari reload-loops), so we collapse to
     // a static, reduced-motion-style experience there.
     const lite =
-      reduce ||
-      window.matchMedia("(pointer:coarse)").matches ||
-      window.innerWidth <= 820;
+      reduce || window.matchMedia("(pointer:coarse)").matches || window.innerWidth <= 820;
 
     const cleanups: Array<() => void> = [];
 
@@ -413,10 +408,7 @@ export function useComicEngine(rootRef: RefObject<HTMLElement | null>) {
         const c = shelfCards[i];
         const r2 = c.getBoundingClientRect();
         if (r2.right < -80 || r2.left > vw + 80) continue;
-        const nn = Math.max(
-          -1.4,
-          Math.min(1.4, (r2.left + r2.width / 2 - vw / 2) / (vw / 2)),
-        );
+        const nn = Math.max(-1.4, Math.min(1.4, (r2.left + r2.width / 2 - vw / 2) / (vw / 2)));
         c.style.transform = `rotate(${(nn * 3 + (i % 2 ? -0.5 : 0.5)).toFixed(2)}deg) translateY(${(Math.pow(Math.abs(nn), 1.5) * 26).toFixed(1)}px) scale(${(1 - Math.min(0.09, Math.abs(nn) * 0.05)).toFixed(3)})`;
       }
     };
@@ -533,22 +525,34 @@ export function useComicEngine(rootRef: RefObject<HTMLElement | null>) {
         const title = q("[data-role=introTitle]");
         const A = (el: HTMLElement | null, kf: Keyframe[], opt: KeyframeAnimationOptions) =>
           el?.animate(kf, { fill: "both", ...opt });
-        A(seam, [
-          { transform: "translateY(-50%) scaleX(0)" },
-          { transform: "translateY(-50%) scaleX(1)" },
-        ], { duration: 340, easing: "cubic-bezier(.2,.8,.2,1)", delay: 100 });
-        A(title, [
-          { opacity: 0 },
-          { opacity: 1, offset: 0.1 },
-          { opacity: 0.25, offset: 0.2 },
-          { opacity: 1, offset: 0.3 },
-          { opacity: 1 },
-        ], { duration: 800, easing: "steps(1, end)", delay: 240 });
+        A(
+          seam,
+          [
+            { transform: "translateY(-50%) scaleX(0)" },
+            { transform: "translateY(-50%) scaleX(1)" },
+          ],
+          { duration: 340, easing: "cubic-bezier(.2,.8,.2,1)", delay: 100 },
+        );
+        A(
+          title,
+          [
+            { opacity: 0 },
+            { opacity: 1, offset: 0.1 },
+            { opacity: 0.25, offset: 0.2 },
+            { opacity: 1, offset: 0.3 },
+            { opacity: 1 },
+          ],
+          { duration: 800, easing: "steps(1, end)", delay: 240 },
+        );
         const t1 = window.setTimeout(() => {
-          A(title, [
-            { opacity: 1, transform: "translate(-50%,-50%) scale(1)" },
-            { opacity: 0, transform: "translate(-50%,-50%) scale(1.5)" },
-          ], { duration: 300, easing: "ease-in" });
+          A(
+            title,
+            [
+              { opacity: 1, transform: "translate(-50%,-50%) scale(1)" },
+              { opacity: 0, transform: "translate(-50%,-50%) scale(1.5)" },
+            ],
+            { duration: 300, easing: "ease-in" },
+          );
         }, 1150);
         const t2 = window.setTimeout(() => {
           A(top, [{ transform: "translateY(0)" }, { transform: "translateY(-103%)" }], {

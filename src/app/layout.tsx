@@ -31,9 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${marker.variable} ${grotesk.variable} ${mono.variable}`}>
-        {children}
-      </body>
+      <body className={`${marker.variable} ${grotesk.variable} ${mono.variable}`}>{children}</body>
     </html>
   );
 }

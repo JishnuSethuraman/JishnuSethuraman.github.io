@@ -185,7 +185,13 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
         {/* ===================== theme transition overlay ===================== */}
         <div
           aria-hidden
-          style={{ position: "fixed", inset: 0, zIndex: 60, pointerEvents: "none", overflow: "hidden" }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 60,
+            pointerEvents: "none",
+            overflow: "hidden",
+          }}
         >
           <div
             ref={linesRef}
@@ -238,8 +244,12 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
               opacity: 0,
             }}
           >
-            <div style={{ position: "absolute", inset: "-7%", background: "#15120c", clipPath: STAR }} />
-            <div style={{ position: "absolute", inset: 0, background: "var(--acc)", clipPath: STAR }} />
+            <div
+              style={{ position: "absolute", inset: "-7%", background: "#15120c", clipPath: STAR }}
+            />
+            <div
+              style={{ position: "absolute", inset: 0, background: "var(--acc)", clipPath: STAR }}
+            />
           </div>
           <div
             ref={sfxRef}
@@ -305,12 +315,27 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
         <div
           data-role="fx"
           aria-hidden
-          style={{ position: "fixed", inset: 0, zIndex: 75, pointerEvents: "none", overflow: "hidden" }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 75,
+            pointerEvents: "none",
+            overflow: "hidden",
+          }}
         />
         <div
           data-role="cursor"
           aria-hidden
-          style={{ position: "fixed", left: 0, top: 0, zIndex: 80, pointerEvents: "none", width: 0, height: 0, display: "none" }}
+          style={{
+            position: "fixed",
+            left: 0,
+            top: 0,
+            zIndex: 80,
+            pointerEvents: "none",
+            width: 0,
+            height: 0,
+            display: "none",
+          }}
         >
           <div
             style={{
@@ -322,14 +347,32 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
         <div
           data-role="curst1"
           aria-hidden
-          style={{ position: "fixed", left: 0, top: 0, zIndex: 79, pointerEvents: "none", width: 0, height: 0, display: "none" }}
+          style={{
+            position: "fixed",
+            left: 0,
+            top: 0,
+            zIndex: 79,
+            pointerEvents: "none",
+            width: 0,
+            height: 0,
+            display: "none",
+          }}
         >
           <div style={cursorStar(16, 0.4, "spinRevLocal 4s linear infinite")} />
         </div>
         <div
           data-role="curst2"
           aria-hidden
-          style={{ position: "fixed", left: 0, top: 0, zIndex: 78, pointerEvents: "none", width: 0, height: 0, display: "none" }}
+          style={{
+            position: "fixed",
+            left: 0,
+            top: 0,
+            zIndex: 78,
+            pointerEvents: "none",
+            width: 0,
+            height: 0,
+            display: "none",
+          }}
         >
           <div style={cursorStar(10, 0.2, "spinSlowLocal 3s linear infinite")} />
         </div>
@@ -351,17 +394,51 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
             padding: "5px 7px",
           }}
         >
-          <a data-spine="#top" href="#top" style={spineLink}>COVER</a>
-          <a data-spine="#chapter-1" href="#chapter-1" style={spineLink}>CH.1</a>
-          <a data-spine="#chapter-2" href="#chapter-2" style={spineLink}>CH.2</a>
-          <a data-spine="#chapter-3" href="#chapter-3" style={spineLink}>CH.3</a>
-          <a data-spine="#finale" href="#finale" style={spineLink}>FIN</a>
+          <a data-spine="#top" href="#top" style={spineLink}>
+            COVER
+          </a>
+          <a data-spine="#chapter-1" href="#chapter-1" style={spineLink}>
+            CH.1
+          </a>
+          <a data-spine="#chapter-2" href="#chapter-2" style={spineLink}>
+            CH.2
+          </a>
+          <a data-spine="#chapter-3" href="#chapter-3" style={spineLink}>
+            CH.3
+          </a>
+          <a data-spine="#finale" href="#finale" style={spineLink}>
+            FIN
+          </a>
         </div>
 
         {/* ===================== intro cinematic ===================== */}
-        <div data-role="intro" aria-hidden style={{ position: "fixed", inset: 0, zIndex: 90, pointerEvents: "none" }}>
-          <div data-role="introTop" style={{ position: "absolute", left: 0, right: 0, top: 0, height: "50.4%", background: "#0f0c07" }} />
-          <div data-role="introBot" style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "50.4%", background: "#0f0c07" }} />
+        <div
+          data-role="intro"
+          aria-hidden
+          style={{ position: "fixed", inset: 0, zIndex: 90, pointerEvents: "none" }}
+        >
+          <div
+            data-role="introTop"
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: 0,
+              height: "50.4%",
+              background: "#0f0c07",
+            }}
+          />
+          <div
+            data-role="introBot"
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: "50.4%",
+              background: "#0f0c07",
+            }}
+          />
           <div
             data-role="introSeam"
             style={{
@@ -388,13 +465,41 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
               maxWidth: "92vw",
             }}
           >
-            <div style={{ fontFamily: MONO, fontWeight: 700, fontSize: "clamp(10px,1vw,14px)", lineHeight: 1, letterSpacing: ".34em", color: "#f2e8d2", marginBottom: 14 }}>
+            <div
+              style={{
+                fontFamily: MONO,
+                fontWeight: 700,
+                fontSize: "clamp(10px,1vw,14px)",
+                lineHeight: 1,
+                letterSpacing: ".34em",
+                color: "#f2e8d2",
+                marginBottom: 14,
+              }}
+            >
               JS COMICS PRESENTS
             </div>
-            <div style={{ fontFamily: MARKER, fontSize: "clamp(38px,7vw,110px)", lineHeight: 0.9, color: "var(--acc)", textShadow: ".05em .05em 0 rgba(0,0,0,.55)" }}>
+            <div
+              style={{
+                fontFamily: MARKER,
+                fontSize: "clamp(38px,7vw,110px)",
+                lineHeight: 0.9,
+                color: "var(--acc)",
+                textShadow: ".05em .05em 0 rgba(0,0,0,.55)",
+              }}
+            >
               THE ML ENGINEER
             </div>
-            <div style={{ fontFamily: MONO, fontWeight: 700, fontSize: "clamp(9px,.85vw,12px)", lineHeight: 1.6, letterSpacing: ".26em", color: "rgba(242,232,210,.6)", marginTop: 14 }}>
+            <div
+              style={{
+                fontFamily: MONO,
+                fontWeight: 700,
+                fontSize: "clamp(9px,.85vw,12px)",
+                lineHeight: 1.6,
+                letterSpacing: ".26em",
+                color: "rgba(242,232,210,.6)",
+                marginTop: 14,
+              }}
+            >
               A JAYADITYAN SETHURAMAN PRODUCTION · ISSUE #01
             </div>
           </div>
