@@ -339,3 +339,19 @@ img {
   transform: translate(-2px, -2px);
   box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.55);
 }
+
+/* ============================ mobile relief ============================
+   The giant vmax repeating-conic "speed line" layers and layer-promoted
+   parallax wrappers exhaust mobile GPU memory (Safari reload-loops), so drop
+   the heaviest raster surfaces and layer promotion on touch/small screens.
+   The engine also collapses the pinned warp/shelf into a static layout here. */
+@media (max-width: 820px), (pointer: coarse) {
+  .ray-layer {
+    display: none !important;
+  }
+  [data-px],
+  [data-warp-zoom] {
+    will-change: auto !important;
+    transform: none !important;
+  }
+}
