@@ -23,6 +23,7 @@ export default function TopBar({
 }) {
   return (
     <div
+      data-role="topbar"
       style={{
         position: "fixed",
         top: 0,
