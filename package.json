@@ -18,6 +18,10 @@
     "test:e2e:ui": "playwright test --ui",
     "serve:out": "serve out -l 4173",
     "verify": "npm run lint && npm run format:check && npm run typecheck && npm run build && npm run test:e2e",
+    "ai:setup": "node scripts/ai/testgen.mjs setup",
+    "ai:testgen": "node scripts/ai/testgen.mjs generate",
+    "ai:check": "node scripts/ai/testgen.mjs check --staged",
+    "ai:review": "node scripts/ai/testgen.mjs review --push",
     "prepare": "husky"
   },
   "lint-staged": {

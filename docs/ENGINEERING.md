@@ -4,15 +4,17 @@ The quality system for this repo: what runs where today, the conventions, and th
 
 ## Quality gates
 
-| Gate           | When            | What runs                                                  | Enforced by            |
-| -------------- | --------------- | ---------------------------------------------------------- | ---------------------- |
-| Format + lint  | `git commit`    | lint-staged → ESLint `--fix` + Prettier on staged files    | Husky `pre-commit`     |
-| Commit message | `git commit`    | Conventional Commits (`type(scope): subject`, ≤ 100 chars) | Husky `commit-msg`     |
-| Types + lint   | `git push`      | `tsc --noEmit` + `eslint .`                                | Husky `pre-push`       |
-| Full static    | every push (CI) | ESLint · `prettier --check` · `tsc --noEmit`               | `ci.yml` _quality_ job |
-| E2E            | every push (CI) | build → Playwright (desktop Chromium + mobile WebKit)      | `ci.yml` _e2e_ job     |
-| Deploy gate    | push to `main`  | lint + typecheck + build, then Pages deploy                | `pages.yml`            |
-| Dependencies   | weekly          | npm (grouped minor/patch) + GitHub Actions updates         | Dependabot             |
+| Gate           | When            | What runs                                                                     | Enforced by                     |
+| -------------- | --------------- | ----------------------------------------------------------------------------- | ------------------------------- |
+| Format + lint  | `git commit`    | lint-staged → ESLint `--fix` + Prettier on staged files                       | Husky `pre-commit`              |
+| Commit message | `git commit`    | Conventional Commits (`type(scope): subject`, ≤ 100 chars)                    | Husky `commit-msg`              |
+| Types + lint   | `git push`      | `tsc --noEmit` + `eslint .`                                                   | Husky `pre-push`                |
+| Full static    | every push (CI) | ESLint · `prettier --check` · `tsc --noEmit`                                  | `ci.yml` _quality_ job          |
+| E2E            | every push (CI) | build → Playwright (desktop Chromium + mobile WebKit)                         | `ci.yml` _e2e_ job              |
+| Deploy gate    | push to `main`  | lint + typecheck + build, then Pages deploy                                   | `pages.yml`                     |
+| Dependencies   | weekly          | npm (grouped minor/patch) + GitHub Actions updates                            | Dependabot                      |
+| Test coverage  | `git commit`    | deterministic check: changed source ↔ e2e anchors (advisory)                  | Husky `pre-commit` → `ai:check` |
+| AI test review | `git push`      | local LLM reviews outgoing diff, suggests missing tests (advisory, fail-open) | Husky `pre-push` → `ai:review`  |
 
 One command reproduces the whole CI gate locally:
 
@@ -33,6 +35,40 @@ npm run test:e2e:ui   # Playwright UI mode for debugging
 ```
 
 Husky installs its hooks automatically via the `prepare` script on `npm ci`.
+
+## Local AI test assistant
+
+`scripts/ai/testgen.mjs` runs a Hugging Face coder model **locally** through Ollama —
+no code ever leaves the machine. Sized for an 8GB-VRAM GPU (RTX 3070):
+**Qwen2.5-Coder-7B-Instruct**, GGUF **Q4_K_M** (~4.7GB), pulled straight from Hugging Face
+(`hf.co/bartowski/Qwen2.5-Coder-7B-Instruct-GGUF:Q4_K_M` — the single-file community
+quant; Qwen's official GGUF repo is sharded, which Ollama can't pull yet).
+
+```bash
+npm run ai:setup                                     # install ollama (winget) + pull the model
+npm run ai:testgen -- src/components/comic/Foo.tsx   # draft e2e/generated/foo.shared.spec.ts
+npm run ai:testgen -- src/... --flavor=mobile        # target the mobile project instead
+npm run ai:check                                     # what pre-commit runs (deterministic)
+npm run ai:review                                    # what pre-push runs (LLM, advisory)
+```
+
+How it plugs into the hooks — the design rule is **deterministic checks may block; LLM
+output never does**:
+
+- `pre-commit` → `ai:check` — a static map of changed source files to e2e anchor strings;
+  warns when a change has no obvious coverage. No LLM, instant, advisory
+  (`AI_STRICT=1` makes it blocking).
+- `pre-push` → `ai:review` — the local model reads the outgoing diff and prints up to five
+  missing test cases with target spec files. Fails open when Ollama isn't running; skipped
+  in CI and with `SKIP_AI=1`.
+- `ai:testgen` — generates a full spec using the repo's conventions and existing specs as
+  style reference, then formats (Prettier), lints (ESLint `--fix`), and validates it loads
+  (`playwright test --list`), with one automatic repair round. Output lands in
+  `e2e/generated/` **for human review** — run it, prune weak assertions, then commit it.
+  Unparseable output is saved as an ignored `.draft.ts` instead.
+
+Knobs: `AI_MODEL` (e.g. the 3B fallback `hf.co/bartowski/Qwen2.5-Coder-3B-Instruct-GGUF:Q4_K_M`
+when VRAM is busy), `OLLAMA_HOST`, `SKIP_AI=1`, `AI_STRICT=1`.
 
 ## Conventions
 

@@ -18,16 +18,18 @@ npm run dev      # http://localhost:3000
 
 ## Scripts
 
-| Script                            | What it does                                                  |
-| --------------------------------- | ------------------------------------------------------------- |
-| `npm run dev`                     | Dev server                                                    |
-| `npm run build`                   | Production static export → `out/`                             |
-| `npm run lint` / `lint:fix`       | ESLint (Next 16 flat config)                                  |
-| `npm run typecheck`               | `tsc --noEmit`                                                |
-| `npm run format` / `format:check` | Prettier write / verify                                       |
-| `npm run test:e2e`                | Playwright e2e against `out/` (build first)                   |
-| `npm run test:e2e:ui`             | Playwright UI mode                                            |
-| `npm run verify`                  | The full CI gate locally: lint · format · types · build · e2e |
+| Script                            | What it does                                                     |
+| --------------------------------- | ---------------------------------------------------------------- |
+| `npm run dev`                     | Dev server                                                       |
+| `npm run build`                   | Production static export → `out/`                                |
+| `npm run lint` / `lint:fix`       | ESLint (Next 16 flat config)                                     |
+| `npm run typecheck`               | `tsc --noEmit`                                                   |
+| `npm run format` / `format:check` | Prettier write / verify                                          |
+| `npm run test:e2e`                | Playwright e2e against `out/` (build first)                      |
+| `npm run test:e2e:ui`             | Playwright UI mode                                               |
+| `npm run verify`                  | The full CI gate locally: lint · format · types · build · e2e    |
+| `npm run ai:setup`                | Install Ollama + pull the local HF coder model (7B Q4, 8GB VRAM) |
+| `npm run ai:testgen -- <file>`    | Draft a Playwright spec for a component with the local LLM       |
 
 ## Quality system
 

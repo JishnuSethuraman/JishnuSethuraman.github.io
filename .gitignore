@@ -16,6 +16,7 @@
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+e2e/generated/*.draft.ts
 
 # next.js
 /.next/
