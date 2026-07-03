@@ -11,7 +11,7 @@ warp-tunnel hero, pinned project shelf, and light/dark ("inky night") editions.
 ## Getting started
 
 ```bash
-nvm use          # Node 22
+nvm use          # Node 24
 npm ci
 npm run dev      # http://localhost:3000
 ```

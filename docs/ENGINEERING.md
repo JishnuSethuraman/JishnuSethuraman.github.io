@@ -25,7 +25,7 @@ npm run verify   # lint · format:check · typecheck · build · e2e
 ## Local workflow
 
 ```bash
-nvm use               # Node 22 (see .nvmrc; engines >= 20.9)
+nvm use               # Node 24 (see .nvmrc; its npm 11 owns the lockfile format)
 npm ci
 npx playwright install chromium webkit   # once, for e2e
 
