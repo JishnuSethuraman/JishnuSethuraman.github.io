@@ -526,6 +526,7 @@ export default function Career() {
           />
           <div
             ref={prRef}
+            data-role="tlprogress"
             style={{
               position: "absolute",
               left: "clamp(14px,2.6vw,30px)",
