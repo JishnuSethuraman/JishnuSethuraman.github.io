@@ -14,13 +14,7 @@ const navLink: CSSProperties = {
   padding: "8px 9px",
 };
 
-export default function TopBar({
-  theme,
-  onToggle,
-}: {
-  theme: Theme;
-  onToggle: () => void;
-}) {
+export default function TopBar({ theme, onToggle }: { theme: Theme; onToggle: () => void }) {
   return (
     <div
       data-role="topbar"

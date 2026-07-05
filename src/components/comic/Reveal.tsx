@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  createElement,
-  useEffect,
-  useRef,
-  type CSSProperties,
-  type ElementType,
-  type ReactNode,
-} from "react";
+import { useEffect, useRef, type CSSProperties, type ElementType, type ReactNode } from "react";
 
 type RevealKind = "slam" | "wipe" | "sfx" | "flyL" | "flyR" | "pop" | "redact";
 
@@ -73,5 +66,10 @@ export default function Reveal({
   }, [kind, delay]);
 
   const initial: CSSProperties = kind === "redact" ? { ...style } : { opacity: 0, ...style };
-  return createElement(as, { ref, className, style: initial, ...rest }, children);
+  const Tag = as;
+  return (
+    <Tag ref={ref} className={className} style={initial} {...rest}>
+      {children}
+    </Tag>
+  );
 }

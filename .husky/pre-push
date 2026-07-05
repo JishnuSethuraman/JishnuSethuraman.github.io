@@ -1,0 +1,2 @@
+npm run typecheck && npm run lint
+node scripts/ai/testgen.mjs review --push
