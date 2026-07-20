@@ -70,6 +70,10 @@ output never does**:
 Knobs: `AI_MODEL` (e.g. the 3B fallback `hf.co/bartowski/Qwen2.5-Coder-3B-Instruct-GGUF:Q4_K_M`
 when VRAM is busy), `OLLAMA_HOST`, `SKIP_AI=1`, `AI_STRICT=1`.
 
+Troubleshooting: Ollama auto-updates can restart the server and drop the model
+registration (`ai:review` then logs a 404 and fails open — pushes are never blocked).
+Re-run `npm run ai:setup`; it re-registers against the existing blob store in minutes.
+
 ## Conventions
 
 - **Commits** — [Conventional Commits](https://www.conventionalcommits.org): `feat:`, `fix:`,
