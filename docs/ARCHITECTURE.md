@@ -48,7 +48,11 @@ the page at one render pass and makes the effects safe to disable wholesale.
 Two themes ("light" cover / "inky night") are CSS-variable driven. `ComicRoot` owns a
 `data-theme` attribute; `[data-theme="dark"] .scene-light { display:none }` style rules flip
 the hero scenes, and every section reads `var(--bg/--ink/--panel/...)`. The 1s page-turn
-transition is Web Animations API on fixed overlay elements.
+transition is Web Animations API on fixed overlay elements that are **permanently
+composited** (`will-change`, no display toggles; the speed-line burst is rastered at 71vmax
+and scaled ~3× when animated). The actual `data-theme` swap happens at 420ms — behind the
+flash overlay's full-cover window (0.30–0.62) — and the engine pauses its layout-reading
+loop (`data-transitioning`) so the page-wide restyle can't stall the visible animation.
 
 ### Performance modes
 
