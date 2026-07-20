@@ -82,33 +82,39 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
       return;
     }
     busy.current = true;
+    // pause the engine's per-frame layout reads while the whole tree restyles —
+    // they force sync layout against an invalidated page and amplify the stall
+    rootRef.current?.setAttribute("data-transitioning", "");
 
     const A = (el: HTMLElement | null, kf: Keyframe[], opt: KeyframeAnimationOptions) =>
       el?.animate(kf, { fill: "both", ...opt });
 
-    const lines = linesRef.current;
-    if (lines) lines.style.display = "block";
+    // lines layer stays mounted+composited; scales are ×3.1 because the element
+    // is rastered at 71vmax (¼ the texture area of the design's 220vmax)
     A(
-      lines,
+      linesRef.current,
       [
-        { opacity: 0, transform: "translate(-50%,-50%) scale(1.8) rotate(0deg)" },
-        { opacity: 0.95, transform: "translate(-50%,-50%) scale(1) rotate(10deg)", offset: 0.42 },
-        { opacity: 0.6, transform: "translate(-50%,-50%) scale(.9) rotate(16deg)", offset: 0.7 },
-        { opacity: 0, transform: "translate(-50%,-50%) scale(.8) rotate(22deg)" },
+        { opacity: 0, transform: "translate(-50%,-50%) scale(5.6) rotate(0deg)" },
+        { opacity: 0.95, transform: "translate(-50%,-50%) scale(3.1) rotate(10deg)", offset: 0.42 },
+        { opacity: 0.6, transform: "translate(-50%,-50%) scale(2.8) rotate(16deg)", offset: 0.7 },
+        { opacity: 0, transform: "translate(-50%,-50%) scale(2.5) rotate(22deg)" },
       ],
       { duration: 1000, easing: "cubic-bezier(.3,.7,.2,1)" },
     );
 
     shakeRef.current?.animate(shakeFrames(15), { duration: 900, easing: "linear" });
 
+    // flash holds full cover through the 420ms theme swap (0.30–0.62) so the
+    // page-wide restyle happens behind an opaque compositor layer
     A(
       flashRef.current,
       [
         { opacity: 0 },
         { opacity: 0, offset: 0.16 },
-        { opacity: 1, offset: 0.33 },
-        { opacity: 1, offset: 0.47 },
-        { opacity: 0, offset: 0.82 },
+        { opacity: 1, offset: 0.3 },
+        { opacity: 1, offset: 0.62 },
+        { opacity: 0, offset: 0.92 },
+        { opacity: 0 },
       ],
       { duration: 1000, easing: "ease-out" },
     );
@@ -152,7 +158,7 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
 
     window.setTimeout(() => setTheme(next), 420);
     window.setTimeout(() => {
-      if (lines) lines.style.display = "none";
+      rootRef.current?.removeAttribute("data-transitioning");
       busy.current = false;
     }, 1040);
   }, [theme]);
@@ -193,17 +199,20 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
             overflow: "hidden",
           }}
         >
+          {/* rastered small (71vmax) and scaled up ~3x when animated: keeps the
+              texture permanently composited without the display-toggle raster
+              stall that used to eat the first frames of the transition */}
           <div
             ref={linesRef}
             style={{
               position: "absolute",
               left: "50%",
               top: "50%",
-              width: "220vmax",
-              height: "220vmax",
+              width: "71vmax",
+              height: "71vmax",
               transform: "translate(-50%,-50%)",
-              display: "none",
               opacity: 0,
+              willChange: "transform, opacity",
               background:
                 "repeating-conic-gradient(from 0deg at 50% 50%,#15120c 0deg 1deg,transparent 1deg 4deg)",
             }}
@@ -214,6 +223,7 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
               position: "absolute",
               inset: 0,
               opacity: 0,
+              willChange: "opacity",
               background: "radial-gradient(circle at 50% 50%,#fff,var(--acc) 60%,var(--acc))",
             }}
           />
@@ -226,6 +236,7 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
               width: "140%",
               height: "120%",
               transform: "translateX(-125%) skewX(-12deg)",
+              willChange: "transform",
               backgroundColor: "var(--acc)",
               borderRight: "8px solid #15120c",
               backgroundImage: "radial-gradient(#15120c 1.4px,transparent 1.8px)",
@@ -242,6 +253,7 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
               height: "min(56vw,620px)",
               transform: "translate(-50%,-50%) scale(0)",
               opacity: 0,
+              willChange: "transform, opacity",
             }}
           >
             <div
@@ -259,6 +271,7 @@ export default function ComicRoot({ children }: { children: ReactNode }) {
               top: "50%",
               transform: "translate(-50%,-50%) scale(0)",
               opacity: 0,
+              willChange: "transform, opacity",
               fontFamily: MARKER,
               fontSize: "min(20vw,260px)",
               lineHeight: 0.9,

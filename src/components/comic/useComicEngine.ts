@@ -495,13 +495,16 @@ export function useComicEngine(rootRef: RefObject<HTMLElement | null>) {
       const v = yy - lastY;
       lastY = yy;
       vel += (v - vel) * 0.2;
-      if (!reduce) {
+      // ComicRoot sets data-transitioning during the theme page-turn; skip the
+      // layout-reading updates so we don't force sync layout on the restyling tree
+      const paused = root.hasAttribute("data-transitioning");
+      if (!reduce && !paused) {
         updateWarp();
         updateShelf();
         updateRise();
         updateAmbient();
       }
-      if (!reduce && speedoEl) {
+      if (!reduce && !paused && speedoEl) {
         const o = Math.min(0.26, Math.abs(vel) * 0.005);
         speedoEl.style.opacity = o < 0.02 ? "0" : o.toFixed(2);
       }
